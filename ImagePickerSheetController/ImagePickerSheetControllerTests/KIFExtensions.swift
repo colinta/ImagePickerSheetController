@@ -10,31 +10,48 @@ import UIKit
 import KIF
 
 extension XCTestCase {
-    
-    func tester(file : String = __FILE__, _ line : Int = __LINE__) -> KIFUITestActor {
+
+    func tester(file : String = #file, _ line : Int = #line) -> KIFUITestActor {
         return KIFUITestActor(inFile: file, atLine: line, delegate: self)
     }
-    
-    func system(file : String = __FILE__, _ line : Int = __LINE__) -> KIFSystemTestActor {
+
+    func system(file : String = #file, _ line : Int = #line) -> KIFSystemTestActor {
         return KIFSystemTestActor(inFile: file, atLine: line, delegate: self)
     }
     
 }
 
 extension KIFTestActor {
-    
-    func tester(file : String = __FILE__, _ line : Int = __LINE__) -> KIFUITestActor {
+
+    func tester(file : String = #file, _ line : Int = #line) -> KIFUITestActor {
         return KIFUITestActor(inFile: file, atLine: line, delegate: self)
     }
-    
-    func system(file : String = __FILE__, _ line : Int = __LINE__) -> KIFSystemTestActor {
+
+    func system(file : String = #file, _ line : Int = #line) -> KIFSystemTestActor {
         return KIFSystemTestActor(inFile: file, atLine: line, delegate: self)
     }
     
 }
 
 extension KIFUITestActor {
-    
+
+    func waitForViewWithAccessibilityIdentifier(identifier: String) -> UIView {
+        var view: UIView? = nil
+        waitForAccessibilityElement(nil, view: &view, withIdentifier: identifier, tappable: false)
+        return view!
+    }
+
+    func waitForAbsenceOfViewWithAccessibilityIdentifier(identifier: String) {
+        waitForAbsenceOfViewWithElementMatchingPredicate(NSPredicate(format: "accessibilityIdentifier = %@", identifier))
+    }
+
+    func tapViewWithAccessibilityIdentifier(identifier: String) {
+        var view: UIView? = nil
+        var element: UIAccessibilityElement? = nil
+        waitForAccessibilityElement(&element, view: &view, withIdentifier: identifier, tappable: true)
+        tapAccessibilityElement(element, inView: view)
+    }
+
     // Needed because UICollectionView fails to select an item due to a reason I don't quite grasp
     func tapImagePreviewAtIndexPath(indexPath: NSIndexPath, inCollectionViewWithAccessibilityIdentifier collectionViewIdentifier: String) {
         let collectionView = waitForViewWithAccessibilityIdentifier(collectionViewIdentifier) as! UICollectionView
@@ -43,7 +60,8 @@ extension KIFUITestActor {
         let contentOffset = CGPoint(x: cellAttributes!.frame.minX-collectionView.contentInset.left, y: 0)
         
         collectionView.setContentOffset(contentOffset, animated: false)
-        
+        waitForAnimationsToFinish()
+
         let newCellAttributes = collectionView.layoutAttributesForItemAtIndexPath(indexPath)
         let cellCenter = collectionView.convertPoint(newCellAttributes!.center, toView: nil)
         

@@ -1,0 +1,34 @@
+source 'https://github.com/CocoaPods/Specs.git'
+
+# Uncomment this line to define a global platform for your project
+platform :ios, '8.0'
+
+# Yep.
+inhibit_all_warnings!
+
+project 'ImagePickerSheetController'
+
+# Opt into framework support (required for Swift support in CocoaPods RC1)
+use_frameworks!
+
+def common_pods
+end
+
+def spec_pods
+  pod 'KIF'
+  pod 'Quick'
+  pod 'Nimble'
+end
+
+target 'ImagePickerSheetController' do
+  common_pods
+end
+
+target 'Example' do
+  common_pods
+end
+
+target 'ImagePickerSheetControllerTests' do
+  common_pods
+  spec_pods
+end
