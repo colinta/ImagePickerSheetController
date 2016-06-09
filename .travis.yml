@@ -6,6 +6,6 @@ before_install:
   - gem install cocoapods
 install:
   - cd ImagePickerSheetController && pod install && cd ..
-xcode_workspace: ImagePickerSheetController.xcworkspace
+xcode_workspace: ImagePickerSheetController/ImagePickerSheetController.xcworkspace
 xcode_scheme: ImagePickerSheetController
 xcode_sdk: iphonesimulator
